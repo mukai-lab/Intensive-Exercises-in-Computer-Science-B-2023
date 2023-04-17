@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+
+import rospy
+import cv2
+import numpy as np
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
+
+class ColorExtract(object):
+    def __init__(self):
+        self._red_pub = rospy.Publisher('red_image', Image, queue_size=1)
+        self._yellow_pub = rospy.Publisher('yellow_image', Image, queue_size=1)
+        self._green_pub = rospy.Publisher('green_image', Image, queue_size=1)
+        self._image_sub = rospy.Subscriber('/usb_cam/image_raw', Image, self.callback)
+        self._bridge = CvBridge()
+        
+    def get_colored_area(self, cv_image, lower, upper):
+        hsv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
+        mask_image = cv2.inRange(hsv_image, lower, upper)
+        extracted_image = cv2.bitwise_and(cv_image, cv_image, mask=mask_image)
+        area = cv2.countNonZero(mask_image)
+        return (area, extracted_image)
+        
+    def callback(self, data):
+        try:
+            cv_image = self._bridge.imgmsg_to_cv2(data, 'bgr8')
+        except CvBridgeError as e:
+            print(e)
+        yellow_area, yellow_image = self.get_colored_area(
+            cv_image, np.array([20,80,10]), np.array([50,255,255]))
+        green_area, green_image = self.get_colored_area(
+            cv_image, np.array([50,64,0]), np.array([90,255,255]))
+        red_area, red_image = self.get_colored_area(
+            cv_image, np.array([150,100,50]), np.array([180,255,255]))
+            
+        try:
+            self._red_pub.publish(self._bridge.cv2_to_imgmsg(red_image, 'bgr8'))
+            self._yellow_pub.publish(self._bridge.cv2_to_imgmsg(yellow_image, 'bgr8'))
+            self._green_pub.publish(self._bridge.cv2_to_imgmsg(green_image, 'bgr8'))
+        except CvBridgeError as e:
+            print(e)
+
+if __name__ == '__main__':
+    rospy.init_node('color_extract')
+    color = ColorExtract()
+    try:
+        rospy.spin()
+    except KeyboardInterrupt:
+        pass
+
