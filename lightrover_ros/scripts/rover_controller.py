@@ -28,23 +28,55 @@ def callback_laser(msg):
     global ranges
     ranges = msg.ranges
     front = 200
-    if ranges[front] > 0.3:
+    
+    #Q1-2
+    #print(ranges[front])
+    
+    #Q1-3
+    '''
+    if ranges[front] > 0.25:
         speed.linear.x = 0.1
-    elif ranges[front] > 0.25:
-        speed.linear.x = 0.01
     else:
-        speed.linear.x = 0
-    speed.angular.z = 0.0
-
+        speed.linear.x = 0.0
+    '''
+    
+    #Q1-5
+    '''
+    if ranges[front] > 0.25:
+        speed.linear.x = 0.1
+    else:
+        speed.linear.x = -0.1
+    '''
+    
+    #Q1-6
+    '''
+    min_dis = 100
+    min_idx = 0
+    for i, dis in enumerate(ranges):
+        if dis != 0 and dis < min_dis:
+            min_dis = dis
+            min_idx = i    
+    if min_dis < 0.25:
+        speed.linear.x = -0.1
+    else:
+        speed.linear.x = 0.1   
+    if min_idx < front:
+        speed.angular.z = -1.0
+    else:
+        speed.angular.z = 1.0
+    '''
+​
 def controller():
     global speed
-    #    
-    #if odom_x < 0.1:
-    #   speed.linear.x = 0.1
-    #else:
-    #   speed.linear.x = 0.0
-       #print(odom_x)
-    speed.angular.z = 0.0  
+    
+    #Q1-1
+    '''
+    if odom_x < 0.1:
+        speed.linear.x = 0.1
+    else:
+        speed.linear.x = 0.0  
+    speed.angular.z = 0
+    '''
 
 def rover_controller():
     global speed
