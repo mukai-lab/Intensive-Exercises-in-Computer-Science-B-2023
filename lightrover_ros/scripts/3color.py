@@ -10,7 +10,7 @@ class ColorExtract(object):
     def __init__(self):
         self._red_pub = rospy.Publisher('red_image', Image, queue_size=1)
         self._yellow_pub = rospy.Publisher('yellow_image', Image, queue_size=1)
-        self._green_pub = rospy.Publisher('green_image', Image, queue_size=1)
+        self._blue_pub = rospy.Publisher('blue_image', Image, queue_size=1)
         self._image_sub = rospy.Subscriber('/usb_cam/image_raw', Image, self.callback)
         self._bridge = CvBridge()
         
@@ -26,20 +26,37 @@ class ColorExtract(object):
             cv_image = self._bridge.imgmsg_to_cv2(data, 'bgr8')
         except CvBridgeError as e:
             print(e)
-        yellow_area, yellow_image = self.get_colored_area(
-            cv_image, np.array([20,80,10]), np.array([50,255,255]))
-        green_area, green_image = self.get_colored_area(
-            cv_image, np.array([50,64,0]), np.array([90,255,255]))
+        #Q3-2
+        '''
         red_area, red_image = self.get_colored_area(
-            cv_image, np.array([150,100,50]), np.array([180,255,255]))
+            cv_image, np.array([0,100,50]), np.array([20,255,255]))
+        yellow_area, yellow_image = self.get_colored_area(
+            cv_image, np.array([20,80,10]), np.array([40,255,255]))
+        blue_area, blue_image = self.get_colored_area(
+            cv_image, np.array([100,50,50]), np.array([120,255,255]))
+        '''
             
         try:
             self._red_pub.publish(self._bridge.cv2_to_imgmsg(red_image, 'bgr8'))
             self._yellow_pub.publish(self._bridge.cv2_to_imgmsg(yellow_image, 'bgr8'))
-            self._green_pub.publish(self._bridge.cv2_to_imgmsg(green_image, 'bgr8'))
+            self._blue_pub.publish(self._bridge.cv2_to_imgmsg(blue_image, 'bgr8'))
         except CvBridgeError as e:
             print(e)
-
+        
+        #Q3-3
+        '''
+        rospy.loginfo('blue=%d, yellow=%d, red=%d' % (blue_area, yellow_area, red_area))
+        if red_area > 3000:
+            self._color.color_type = 1
+        elif yellow_area > 3000:
+            self._color.color_type = 2
+        elif blue_area > 3000:
+            self._color.color_type = 3
+        else:
+            self._color.color_type = 0
+        self._color_detector_pub.publish(self._color)
+        '''
+        
 if __name__ == '__main__':
     rospy.init_node('color_extract')
     color = ColorExtract()
