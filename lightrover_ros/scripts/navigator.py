@@ -39,10 +39,10 @@ class Navigator:
         goal_y = self.goal[1]
 ​
         #Q2-3
-	     '''
+        '''
         if abs(amcl_x-goal_x) < 0.05 and abs(amcl_y-goal_y) < 0.05:
             print('goal!!')
-	     '''
+	'''
 ​
         #Q2-4
         '''
@@ -55,20 +55,20 @@ class Navigator:
         '''
         if abs(amcl_x-goal_x) < 0.05 and abs(amcl_y-goal_y) < 0.05:
             print('goal!!')
-      	   print(msg.amcl_x, msg.amcl_y)
+      	    print(msg.amcl_x, msg.amcl_y)
             if self.goal_number < len(self.goal)-1:
                self.goal_number = self.goal_number + 1
         '''
 ​
-	     #Q2-6
-	     '''
+	#Q2-6
+	'''
         if abs(amcl_x-goal_x) < 0.05 and abs(amcl_y-goal_y) < 0.05:
             print('goal!!')
 	         print('amcl',amcl_x, amcl_y)
 	         print('odom',odom_x, odom_y)
             if self.goal_number < len(self.goal)-1:
                 self.goal_number = self.goal_number + 1
-	     '''
+	'''
  
 if __name__ == '__main__':
     try:
