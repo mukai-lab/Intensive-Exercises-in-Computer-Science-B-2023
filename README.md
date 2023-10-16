@@ -1,1 +1,1 @@
-# Intensive-Exercises-in-Computer-Science-B-2023-
+# Intensive-Exercises-in-Computer-Science-B-2023
