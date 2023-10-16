@@ -28,42 +28,35 @@ def callback_odom(msg):
     
 def callback_laser(msg):
         global ranges
+        global  speed
         ranges = msg.ranges
-
-        #if ranges[180] > 0.25:
-        #   speed.linear.x = 0.1
-        #elif ranges[180] < 0.25:
-        #   speed.linear.x = -0.1
-        #else:
-        #   speed.linear.x = 0.01
-        #speed.angular.z = 0.0
         
-        
-        if (ranges[230] < 0.40 and ranges[230] > 0.0) or (ranges[220] < 0.40 and ranges[220] > 0.0):
-           speed.linear.x = 0.05
-           speed.angular.z = -0.3
-        elif (ranges[180] < 0.40 and ranges[180] > 0.0) or (ranges[190] < 0.40 and ranges[190] > 0.0):
-           speed.linear.x = 0.05
-           speed.angular.z = 0.3
+        #Q3-5
+        '''
+        if (0 < ranges[210] < 0.30):
+            speed.linear.x = 0.0
+            speed.angular.z = 0.5
+        elif (0 < ranges[190] < 0.30):
+            speed.linear.x = 0.0
+            speed.angular.z = 0.5
+        elif (0 < ranges[240] < 0.30):
+            speed.linear.x = 0.1
+            speed.angular.z = -0.5
+        elif (0 < ranges[160] < 0.30):
+            speed.linear.x = 0.1
+            speed.angular.z = 0.5
         else:
-           speed.linear.x = 0.1
-           speed.angular.z = 0.0
-           
+            speed.linear.x = 0.15
+            speed.angular.z = 0.0
+        '''
         
-        
-        #w1 = 0.02
-        #w2 = 0.02
-        #w3 = 0.02
-        #w4 = 0.02
-        #w5 = 0.4
-        #w6 = 0.4
-        #w7 = -0.4
-        #w8 = -0.4
-
-        #speed.linear.x = ranges[230]*w1 + ranges[220]*w2 + ranges[190]*w3 + ranges[180]*w4
-        #speed.angular.z = ranges[230]*w5 + ranges[220]*w6 + ranges[190]*w7 + ranges[180]*w8
-
-
+        #Q3-6
+        '''
+        x_w = [0.02, 0.02, 0.02, 0.02]
+        speed.linear.x = x_w[0] * ranges[160] + x_w[1] * ranges[190] + x_w[2] * ranges[210] + x_w[3] * ranges[240]
+        z_w = [-0.6, -0.6, 0.6, 0.6]
+        speed.angular.z = z_w[0] * ranges[160] + z_w[1] * ranges[190] + z_w[2] * ranges[210] + z_w[3] * ranges[240]
+        '''
 
 def pos_controller():
         global speed
