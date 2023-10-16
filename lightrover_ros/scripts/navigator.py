@@ -5,7 +5,13 @@ from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import PoseWithCovarianceStamped
 
 class Navigator:
-    goal = [[0.0, -0.4, 0.0, 1.0], [-0.4, 0.0, 0.0, 1.0], [0.0, -0.4, 0.0, 1.0], [-0.4, 0.0, 0.0, 1.0]]
+    goal = [[0.0, -0.4, 0.0, 1.0]]
+​
+    #Q2-4,5
+    '''
+    goal = [[0.1, -0.1, 0.0, 1.0],[-0.1, 0.1, 0.0, 1.0],[0.1, 0.0, 0.0, 1.0]]
+    '''
+​
     goal_number = 0
     def __init__(self):
         rospy.init_node('set_goal', anonymous=True)
@@ -27,9 +33,42 @@ class Navigator:
         self.goal_pub.publish(goal_point)
         
     def callback_amcl(self, msg):
-        if abs(msg.pose.pose.position.x - self.goal[self.goal_number][0]) < 0.2 and abs(msg.pose.pose.position.y - self.goal[self.goal_number][1]) < 0.2:
-           if(self.goal_number < len(self.goal)-1):
+        amcl_x = msg.pose.pose.position.x
+        amcl_y = msg.pose.pose.position.y
+        goal_x = self.goal[0]
+        goal_y = self.goal[1]
+​
+        #Q2-3
+	     '''
+        if abs(amcl_x-goal_x) < 0.05 and abs(amcl_y-goal_y) < 0.05:
+            print('goal!!')
+	     '''
+​
+        #Q2-4
+        '''
+        if abs(amcl_x-goal_x) < 0.05 and abs(amcl_y-goal_y) < 0.05:
+            print('goal!!')
+            self.goal_number = (self.goal_number + 1) % 2
+        '''
+      ​
+        #Q2-5
+        '''
+        if abs(amcl_x-goal_x) < 0.05 and abs(amcl_y-goal_y) < 0.05:
+            print('goal!!')
+      	   print(msg.amcl_x, msg.amcl_y)
+            if self.goal_number < len(self.goal)-1:
+               self.goal_number = self.goal_number + 1
+        '''
+​
+	     #Q2-6
+	     '''
+        if abs(amcl_x-goal_x) < 0.05 and abs(amcl_y-goal_y) < 0.05:
+            print('goal!!')
+	         print('amcl',amcl_x, amcl_y)
+	         print('odom',odom_x, odom_y)
+            if self.goal_number < len(self.goal)-1:
                 self.goal_number = self.goal_number + 1
+	     '''
  
 if __name__ == '__main__':
     try:
