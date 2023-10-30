@@ -1,4 +1,5 @@
 # Intensive-Exercises-in-Computer-Science-B-2023
+2023年度のコンピュータサイエンス実習Bの資料です
 ## 構成
 | Directory or File | Description
 | ------ | -------
