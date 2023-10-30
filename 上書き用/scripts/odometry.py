@@ -34,6 +34,9 @@ x = 0.0
 y = 0.0
 th = 0.0
 
+init_flag = True
+counter = 0
+
 read_enc = rospy.ServiceProxy('wrc201_i2c',Wrc201Msg)
 
 def getEncVal():
@@ -52,6 +55,18 @@ def calSpeed():
         global diff_time
         global pre_time
         global diff_count
+        global init_flag
+        global counter
+        global x, y, z
+
+        if init_flag:
+            counter += 1
+            x = 0.0
+            y = 0.0
+            theta = 0.0
+            if counter > 10:
+                init_flag = False
+
         now_time = time.time()
         diff_time = now_time-pre_time
         pre_time = now_time
