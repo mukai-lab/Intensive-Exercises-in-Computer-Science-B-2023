@@ -1,0 +1,26 @@
+[35m[1mScanning dependencies of target _lightrover_ros_generate_messages_check_deps_color_detector[0m
+[  0%] Built target std_msgs_generate_messages_nodejs
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target std_msgs_generate_messages_lisp
+[  0%] Built target std_msgs_generate_messages_cpp
+[  0%] Built target _lightrover_ros_generate_messages_check_deps_Wrc201Msg
+[  0%] Built target std_msgs_generate_messages_eus
+[  0%] Built target _lightrover_ros_generate_messages_check_deps_color_detector
+[ 15%] [34m[1mGenerating Python from MSG lightrover_ros/color_detector[0m
+[ 23%] [34m[1mGenerating Lisp code from lightrover_ros/color_detector.msg[0m
+[ 23%] [34m[1mGenerating Javascript code from lightrover_ros/color_detector.msg[0m
+[ 30%] [34m[1mGenerating C++ code from lightrover_ros/color_detector.msg[0m
+[ 38%] [34m[1mGenerating Javascript code from lightrover_ros/Wrc201Msg.srv[0m
+[ 46%] [34m[1mGenerating Lisp code from lightrover_ros/Wrc201Msg.srv[0m
+[ 46%] Built target lightrover_ros_generate_messages_lisp
+[ 46%] Built target lightrover_ros_generate_messages_nodejs
+[ 53%] [34m[1mGenerating C++ code from lightrover_ros/Wrc201Msg.srv[0m
+[ 61%] [34m[1mGenerating Python code from SRV lightrover_ros/Wrc201Msg[0m
+[ 69%] [34m[1mGenerating EusLisp code from lightrover_ros/color_detector.msg[0m
+[ 76%] [34m[1mGenerating EusLisp code from lightrover_ros/Wrc201Msg.srv[0m
+[ 76%] Built target lightrover_ros_generate_messages_cpp
+[ 84%] [34m[1mGenerating Python msg __init__.py for lightrover_ros[0m
+[ 92%] [34m[1mGenerating Python srv __init__.py for lightrover_ros[0m
+[100%] Built target lightrover_ros_generate_messages_eus
+[100%] Built target lightrover_ros_generate_messages_py
+[100%] Built target lightrover_ros_generate_messages

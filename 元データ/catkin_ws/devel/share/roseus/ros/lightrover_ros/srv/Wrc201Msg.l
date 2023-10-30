@@ -1,0 +1,1 @@
+/home/robot/catkin_ws/devel/.private/lightrover_ros/share/roseus/ros/lightrover_ros/srv/Wrc201Msg.l

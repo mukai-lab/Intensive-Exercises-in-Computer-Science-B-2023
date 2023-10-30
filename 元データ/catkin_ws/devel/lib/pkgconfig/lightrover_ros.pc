@@ -1,0 +1,1 @@
+/home/robot/catkin_ws/devel/.private/lightrover_ros/lib/pkgconfig/lightrover_ros.pc

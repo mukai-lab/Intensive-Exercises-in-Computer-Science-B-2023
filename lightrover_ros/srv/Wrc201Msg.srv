@@ -1,6 +1,0 @@
-int8 addr
-int64 data
-int8 length
-string cmd
----
-int64 readData
