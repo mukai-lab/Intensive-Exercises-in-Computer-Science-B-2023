@@ -57,13 +57,13 @@ def calSpeed():
         global diff_count
         global init_flag
         global counter
-        global x, y, z
+        global x, y, th
 
         if init_flag:
             counter += 1
             x = 0.0
             y = 0.0
-            theta = 0.0
+            th = 0.0
             if counter > 10:
                 init_flag = False
 
