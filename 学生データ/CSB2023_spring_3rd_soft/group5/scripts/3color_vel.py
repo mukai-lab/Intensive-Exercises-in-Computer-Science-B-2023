@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+
+import rospy
+import cv2
+import numpy as np
+from sensor_msgs.msg import Image
+from lightrover_ros.msg import color_detector
+from cv_bridge import CvBridge, CvBridgeError
+
+class ColorExtract(object):
+    def __init__(self):
+        self._red_pub = rospy.Publisher('red_image', Image, queue_size=1)
+        self._yellow_pub = rospy.Publisher('yellow_image', Image, queue_size=1)
+        self._blue_pub = rospy.Publisher('blue_image', Image, queue_size=1)
+        self._color_detector_pub = rospy.Publisher('color_detector', color_detector, queue_size=1)
+        self._image_sub = rospy.Subscriber('/usb_cam/image_raw', Image, self.callback)
+        self._bridge = CvBridge()
+        self._color = color_detector()
+        self._color.color_type = 0
+
+    def get_colored_area(self, cv_image, lower, upper):
+        hsv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
+        mask_image = cv2.inRange(hsv_image, lower, upper)
+        extracted_image = cv2.bitwise_and(cv_image, cv_image, mask=mask_image)
+        area = cv2.countNonZero(mask_image)
+        return (area, extracted_image)
+        
+    def callback(self, data):
+        try:
+            cv_image = self._bridge.imgmsg_to_cv2(data, 'bgr8')
+        except CvBridgeError as e:
+            print(e)
+        red_area, red_image = self.get_colored_area(
+            cv_image, np.array([0,50,50]), np.array([20,255,255]))
+        yellow_area, yellow_image = self.get_colored_area(
+            cv_image, np.array([20,50,50]), np.array([50,255,255]))
+        blue_area, blue_image = self.get_colored_area(
+            cv_image, np.array([100,50,50]), np.array([120,255,255]))
+            
+            
+
+
+            
+        try:
+            self._red_pub.publish(self._bridge.cv2_to_imgmsg(red_image, 'bgr8'))
+            self._yellow_pub.publish(self._bridge.cv2_to_imgmsg(yellow_image, 'bgr8'))
+            self._blue_pub.publish(self._bridge.cv2_to_imgmsg(blue_image, 'bgr8'))
+        except CvBridgeError as e:
+            print(e)
+        rospy.loginfo('blue=%d, yellow=%d, red=%d' % (blue_area, yellow_area, red_area))
+        
+        if self._color.color_type == 0:
+            if red_area > 30000:
+                self._color.color_type = 1
+            if blue_area > 30000:
+                self._color.color_type = 2
+        
+        if self._color.color_type == 1 and red_area < 30000:
+            self._color.color_type = 3
+        if self._color.color_type == 2 and blue_area < 30000:
+            self._color.color_type = 4
+
+        if self._color.color_type == 3 and red_area > 30000:
+            self._color.color_type = 5
+        if self._color.color_type == 4 and blue_area > 30000:
+            self._color.color_type = 5
+        self._color_detector_pub.publish(self._color)
+
+
+            
+        '''if self._color.color_type == 1 or self._color.color_type == 4:
+            self._color.color_type = 4
+        elif yellow_area > 50000:
+            self._color.color_type = 2
+        elif blue_area > 50000:
+            self._color.color_type = 3
+        elif red_area > 10000:
+            self._color.color_type = 1
+        elif yellow_area < 50000 and self._color.color_type == 2:
+            self._color.color_type = 5
+        elif blue_area < 50000 and self._color.color_type == 3:
+            self._color.color_type = 6
+        else:
+            self._color.color_type = 0'''
+        
+        
+
+if __name__ == '__main__':
+    rospy.init_node('color_extract')
+    color = ColorExtract()
+    try:
+        rospy.spin()
+    except KeyboardInterrupt:
+        pass
+

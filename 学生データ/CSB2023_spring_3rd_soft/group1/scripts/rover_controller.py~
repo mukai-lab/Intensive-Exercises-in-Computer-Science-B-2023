@@ -1,0 +1,129 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import rospy
+from geometry_msgs.msg import Twist
+from nav_msgs.msg import Odometry
+import tf
+from tf.transformations import euler_from_quaternion
+from sensor_msgs.msg import LaserScan
+
+odom_x, odom_y, odom_theta = 0.0, 0.0, 0.0
+ranges = []
+speed = Twist()
+
+def callback_odom(msg):
+    global odom_x, odom_y, odom_theta 
+    odom_x = msg.pose.pose.position.x  
+    odom_y = msg.pose.pose.position.y  
+    qx = msg.pose.pose.orientation.x
+    qy = msg.pose.pose.orientation.y
+    qz = msg.pose.pose.orientation.z
+    qw = msg.pose.pose.orientation.w
+    q = (qx, qy, qz, qw)
+    e = euler_from_quaternion(q)
+    odom_theta = e[2]
+    
+def callback_laser(msg):
+    global ranges
+    ranges = msg.ranges
+
+   # print(len(ranges))
+   # count = 0
+   # for i in ranges:
+   #     print(count,i)
+   #     count+=1
+
+    global speed
+
+   # dis=0
+   # count=0
+   # for i in [185,186,187,188,189,190]:
+   #     dis+=ranges[i]
+   #     if(ranges[i]!=0.0):
+   #         count+=1
+   # if(count==0):
+   #     print("fail to get range :",dis)
+   #     return
+   # dis=dis/count
+   # print("ranges[190] distance =",ranges[190])
+   # print("ranges[ave] distance =",dis,count)
+    
+   # if(dis>0.3):
+   #     speed.linear.x=0.05
+   # elif(dis>0.25):
+   #     speed.linear.x=dis-0.245
+   # else:
+   #     speed.linear.x=0
+
+   # if(dis>0.35):
+   #     speed.linear.x=0.1
+   # elif(dis<0.15):
+   #     speed.linear.x=-0.1
+   # else:
+   #     speed.linear.x=(dis-0.25)
+   #     if((dis>0.24) & (dis<0.26)):
+   #         speed.linear.x=0 
+
+    minimum=65535.0
+    mindex=0
+    for i in range(125,250):
+        if((ranges[i]!=0.0)&(minimum>ranges[i])):
+            minimum=ranges[i]
+            mindex=i
+
+    if(mindex==0):
+        return
+
+    speed.angular.z=-(187.5-mindex)*0.05
+    if((minimum>0.5)|((minimum>0.24)&(minimum<0.26))):
+        speed.linear.x=0
+    elif(minimum>0.35):
+        speed.linear.x=0.1
+    elif(minimum<0.15):
+        speed.linear.x=-0.1
+    else:
+        speed.linear.x=(minimum-0.25)
+
+    print("direction :",mindex)
+    print("distance  :",minimum)
+    
+
+    
+
+
+def controller():
+    global speed
+
+   # speed.angular.z=0
+   # if(odom_x<0.07):
+   #     speed.linear.x=0.05
+   # elif(odom_x<0.1):
+   #     speed.linear.x=0.01
+   # else:
+   #     speed.linear.x=0
+    
+
+
+
+
+def rover_controller():
+    global speed
+
+    rospy.init_node('rover_controller', anonymous=True)
+
+    pub = rospy.Publisher('rover_drive',Twist, queue_size=1)
+
+    rate = rospy.Rate(5)
+        
+    odom_subscriber = rospy.Subscriber('odom', Odometry, callback_odom)
+        
+    lidar_subscriber = rospy.Subscriber('scan', LaserScan, callback_laser)
+
+    while not rospy.is_shutdown():
+        rate.sleep()
+        controller()
+        pub.publish(speed)
+
+if __name__ == '__main__':
+    rover_controller()
