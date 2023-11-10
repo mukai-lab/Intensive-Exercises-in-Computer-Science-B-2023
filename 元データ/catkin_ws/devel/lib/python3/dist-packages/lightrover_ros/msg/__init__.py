@@ -1,1 +1,0 @@
-/home/robot/catkin_ws/devel/.private/lightrover_ros/lib/python3/dist-packages/lightrover_ros/msg/__init__.py

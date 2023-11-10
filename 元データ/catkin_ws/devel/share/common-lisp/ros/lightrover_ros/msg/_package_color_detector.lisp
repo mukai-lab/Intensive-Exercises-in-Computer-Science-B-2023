@@ -1,1 +1,0 @@
-/home/robot/catkin_ws/devel/.private/lightrover_ros/share/common-lisp/ros/lightrover_ros/msg/_package_color_detector.lisp

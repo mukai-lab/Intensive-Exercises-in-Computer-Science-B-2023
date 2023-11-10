@@ -1,1 +1,0 @@
-/home/robot/catkin_ws/devel/.private/lightrover_ros/include/lightrover_ros/color_detector.h
