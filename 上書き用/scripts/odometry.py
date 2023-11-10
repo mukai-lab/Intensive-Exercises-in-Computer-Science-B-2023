@@ -58,7 +58,7 @@ def calSpeed():
         global init_flag
         global counter
         global x, y, th
-        
+
         if init_flag == 0:
            counter = counter + 1
            x = 0.0
@@ -66,7 +66,7 @@ def calSpeed():
            th = 0.0
            if counter > 10:
               init_flag = 1
-           
+
         now_time = time.time()
         diff_time = now_time-pre_time
         pre_time = now_time
