@@ -1,0 +1,15 @@
+(cl:defpackage lightrover_ros-srv
+  (:use )
+  (:export
+   "ADDTWOINTS"
+   "<ADDTWOINTS-REQUEST>"
+   "ADDTWOINTS-REQUEST"
+   "<ADDTWOINTS-RESPONSE>"
+   "ADDTWOINTS-RESPONSE"
+   "WRC201MSG"
+   "<WRC201MSG-REQUEST>"
+   "WRC201MSG-REQUEST"
+   "<WRC201MSG-RESPONSE>"
+   "WRC201MSG-RESPONSE"
+  ))
+

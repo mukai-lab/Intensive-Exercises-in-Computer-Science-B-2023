@@ -1,0 +1,1 @@
+/home/robot/catkin_ws/devel/.private/lightrover_ros/share/gennodejs/ros/lightrover_ros/msg/_index.js
