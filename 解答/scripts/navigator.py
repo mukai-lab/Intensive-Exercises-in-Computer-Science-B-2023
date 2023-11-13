@@ -77,7 +77,7 @@ class Navigator:
         '''
         if abs(amcl_x-goal_x) < 0.1 and abs(amcl_y-goal_y) < 0.1:
             print('goal!!')
-      	    print(msg.amcl_x, msg.amcl_y)
+      	    print(amcl_x, amcl_y)
             if self.goal_number < len(self.goal)-1:
                self.goal_number = self.goal_number + 1
         '''
