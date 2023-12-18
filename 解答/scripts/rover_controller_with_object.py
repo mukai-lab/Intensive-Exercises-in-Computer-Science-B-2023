@@ -57,12 +57,6 @@ def callback_laser(msg):
         speed.linear.x = x_w[0] * ranges[front-idx_out] + x_w[1] * ranges[front-idx_in] + x_w[2] * ranges[front+idx_in] + x_w[3] * ranges[front+idx_out]
         z_w = [-0.5, -0.5, 0.5, 0.5]
         speed.angular.z = z_w[0] * ranges[front-idx_out] + z_w[1] * ranges[front-idx_in] + z_w[2] * ranges[front+idx_in] + z_w[3] * ranges[front+idx_out]
-
-        # easy
-        x_w = [0.01, 0.01, 0.01, 0.01]
-        speed.linear.x = x_w[0] * ranges[front-idx_out] + x_w[1] * ranges[front-idx_in] + x_w[2] * ranges[front+idx_in] + x_w[3] * ranges[front+idx_out]
-        z_w = [0.1, 0.1, 0.1, 0.1]
-        speed.angular.z = z_w[0] * ranges[front-idx_out] + z_w[1] * ranges[front-idx_in] + z_w[2] * ranges[front+idx_in] + z_w[3] * ranges[front+idx_out]
         '''
 
 def pos_controller():
