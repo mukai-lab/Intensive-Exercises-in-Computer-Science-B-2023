@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import rospy
+from geometry_msgs.msg import Twist
+from nav_msgs.msg import Odometry
+import tf
+from tf.transformations import euler_from_quaternion
+from sensor_msgs.msg import LaserScan
+import time
+
+odom_x, odom_y, odom_theta = 0.0, 0.0, 0.0
+ranges = []
+speed = Twist()
+rotation_flag = False
+forward_flag = False
+count = 0
+
+def callback_odom(msg):
+    global odom_x, odom_y, odom_theta
+    odom_x = msg.pose.pose.position.x
+    odom_y = msg.pose.pose.position.y
+    qx = msg.pose.pose.orientation.x
+    qy = msg.pose.pose.orientation.y
+    qz = msg.pose.pose.orientation.z
+    qw = msg.pose.pose.orientation.w
+    q = (qx, qy, qz, qw)
+    e = euler_from_quaternion(q)
+    odom_theta = e[2]
+
+def callback_laser(msg):
+    global ranges
+    ranges = msg.ranges
+    """list = []
+    for i,range in enumerate(ranges):
+        if range < 0.2 and range != 0.0:
+            list.append()
+    if len(list):
+        print(sum(list)/len(list))"""
+
+
+def controller():
+    global speed, ranges, rotation_flag, forward_flag, count
+    if ranges:
+        r_ave = sum(ranges[130:155]) / len(ranges[130:155])
+        #b_ave = sum(ranges[40:110]) / len(ranges[40:110])
+        l_ave = (sum(ranges[235:260]) + sum(ranges[0:20])) / (
+            len(ranges[235:260]) + len(ranges[0:20])
+        )
+        #f_ave = sum(ranges[175:215]) / len(ranges[175:215])
+        f_ave = ranges[200]
+        r_list = ranges[135:145]
+        l_list = ranges[255:259]+ranges[0:5]
+        r_list = list(filter(lambda x: x != 0, r_list))
+        l_list = list(filter(lambda x: x != 0, l_list))
+        if r_list and l_list:
+            r = min(r_list)
+            l = min(l_list)
+            ratio = (min(l, 0.15) - min(r, 0.15)) * 1.0
+            #print(f"r: {r},l: {l}, f: {f_ave}")
+        else:
+            ratio = 0.0
+        #ratio = (min(l_ave, 0.15) - min(r_ave, 0.15)) * 1.3
+
+        if forward_flag:
+            speed.linear.x = 0.05
+            speed.angular.z = 0.0 + ratio*1.5
+            count = count + 1
+            #print(f"forward ratio: {ratio}")
+            if count > 15:
+                forward_flag = False
+                count = 0
+        elif rotation_flag:
+            speed.linear.x = 0.0
+            speed.angular.z = -0.3
+            #print(f"rotation {f_ave}")
+            if f_ave > 0.50:
+                rotation_flag = False
+                forward_flag = True
+                #print("start forward")
+        elif f_ave < 0.20:
+            rotation_flag = True
+        elif r_ave < 0.50:
+            speed.linear.x = 0.05
+            speed.angular.z = 0.0 + ratio
+            #print(f"forward ratio: {ratio}")
+        else:
+            rotation_flag = True
+
+def rover_controller():
+    global speed
+
+    rospy.init_node('rover_controller', anonymous=True)
+
+    pub = rospy.Publisher('rover_drive',Twist, queue_size=1)
+
+    rate = rospy.Rate(5)
+
+    odom_subscriber = rospy.Subscriber('odom', Odometry, callback_odom)
+
+    lidar_subscriber = rospy.Subscriber('scan', LaserScan, callback_laser)
+
+    while not rospy.is_shutdown():
+        rate.sleep()
+        controller()
+        pub.publish(speed)
+
+if __name__ == '__main__':
+    odom_subscriber = rospy.Subscriber('odom', Odometry, callback_odom)
+    rover_controller()
